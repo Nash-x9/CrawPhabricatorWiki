@@ -60,7 +60,11 @@ class RequestLimeWiki():
 		
 		
 	def getPrev(self):
-		r = requests.get(self.url_array['loginPage'])
+		try:
+			r = requests.get(self.url_array['loginPage'],timeout=3)
+		except requests.exceptions.ConnectTimeout:
+			print('Connect TimeOut!')
+			sys.exit();
 		r.encoding = 'UTF-8'
 		soup = BeautifulSoup(r.text,'lxml')
 		#print(soup.prettify())
@@ -86,7 +90,7 @@ class RequestLimeWiki():
 	
 crawl = RequestLimeWiki('http://192.168.1.1')#Input your Company Host
 loginData = crawl.login('username','password')#Input your account
-if loginData['cookie'] != None:
+if loginData != None and loginData['cookie'] != None:
 	r = crawl.getPage(dict(loginData['cookie']),crawl.url_array['crawPage'])
 	soup = BeautifulSoup(r.text,'lxml')
 	print(soup.prettify())
