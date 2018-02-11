@@ -11,14 +11,7 @@ def usage():
 	print 
 	print ' --login: Login Phriction.It will return loginDatas'
 	print 
-	print ' --getPage="http://what.you.want.to.craw">: get a requests type object from url'
-
-		
-def login(host,username,password):
-	if username != '' and password != '' and host != '':
-		RLW = RequestLimeWiki(host)
-		return RLW.login(username,password)
-		
+	print ' --getPage="http://what.you.want.to.craw">: get a requests type object from url'	
 
 def main(argv):
 	host = 'http://192.168.1.1'
