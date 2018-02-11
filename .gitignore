@@ -1,0 +1,5 @@
+#run bash
+run.bat
+
+#Pyc python Runtime File
+*.pyc

@@ -4,6 +4,7 @@ import requests
 import bs4  
 import sys 
 import time
+import re
 reload(sys) 
 sys.setdefaultencoding("utf-8")
 from bs4 import BeautifulSoup  
@@ -86,11 +87,22 @@ class RequestLimeWiki():
 		r.encoding = 'UTF-8'
 		return r
 		
-		
+	def parseHtml(self,html):
+		soup = BeautifulSoup(html,'lxml')
+		if 'Document Hierarchy' in html:#这是一个目录 GET FOLDER
+			list = soup.find_all(attrs={"class": "remarkup-list"})
+			list = list[0]
+			count = 0
+			link = []
+			for li in list:
+				#Parent
+				obj = re.search(r'a href="(.*)">(.*)</a>',li.next_element.encode("utf-8"))
+				count+=1
+				link.append({
+					'title': obj.group(2),#目录标题
+					'url'  : self.host + obj.group(1)#目录链接
+				})	
+			return link #返回目录以及对应链接  Back Folders and Link
+		else:
+			return html  #返回文章内容html Back HTML
 	
-crawl = RequestLimeWiki('http://192.168.1.1')#Input your Company Host
-loginData = crawl.login('username','password')#Input your account
-if loginData != None and loginData['cookie'] != None:
-	r = crawl.getPage(dict(loginData['cookie']),crawl.url_array['crawPage'])
-	soup = BeautifulSoup(r.text,'lxml')
-	print(soup.prettify())
